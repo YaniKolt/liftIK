@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 2.8) #Проверка версии CMake.
+﻿cmake_minimum_required(VERSION 2.8) #Проверка версии CMake.
 
-set(PROJECT_NAME CmakeTest) #Создаем обычную локальную переменную с именем проекта
+set(PROJECT_NAME LiftIK) #Создаем обычную локальную переменную с именем проекта
 project(${PROJECT_NAME}) # Название проекта
 
 set(MyLib1 MyLib1) #Переменная с именем библиотеки
