@@ -124,7 +124,8 @@ void AddPass(Elevator& A, vector <Passenger> &listofPass) {
 			cin >> w;
 		}
 		for (int i = 0; i < w; i++) {
-			string name = "Incognito";
+			string name = "Incognito ";
+			name.push_back(i + '0');
 			int weight = rand() % 80 + 50;
 			int currentFloor = rand() % ((A.Get_maxFloor() - A.Get_minFloor()) + A.Get_minFloor());
 			int neededFloor = rand() % ((A.Get_maxFloor() - A.Get_minFloor()) + A.Get_minFloor());
