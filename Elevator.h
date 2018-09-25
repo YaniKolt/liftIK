@@ -12,7 +12,8 @@ class Elevator
 	int minFloor;
 	vector <int> stop;
 	int way; //0-down, 1-up;
-	//vector <int> insideStop;
+	int currentWeigth;
+	
 	
 public:
 	Elevator();
@@ -25,8 +26,13 @@ public:
 	Elevator& operator=(const Elevator& other);
 	void AddStop(int i);
 	void print();
-	//void AddInsideStop(int k);
 	void Motion();
+	void PlusCurrentWeight (int i);
+	void MinusCurrentWeight (int i);
+	int WeightTest();
+private:
+	void OpenDoor();
+	void CloseDoor();
 };
 
 
