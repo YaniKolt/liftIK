@@ -12,7 +12,7 @@ int Passmenu(Elevator& A, vector <Passenger> &listofPass);
 void AddPass(Elevator& A, vector <Passenger> &listofPass);
 void BubbleSort(vector <Passenger> &listofPass);
 void PrintListofPass(vector <Passenger> &listofPass);
-void DelPas(vector <Passenger> &listofPass, int k);
+void DelPas(Elevator &A,vector <Passenger> &listofPass, int k);
 void Passin(Elevator& A, vector <Passenger> &listofPass);
 void Passout(Elevator& A, vector <Passenger> &listofPass);
 
@@ -56,7 +56,7 @@ int menu (Elevator& A, vector <Passenger> &listofPass) {
 	cout<< endl << "****************************************************" << endl;
 	cout << "1) Управление пассажирами" << endl;
 	cout << "2) Поехали" << endl;
-	cout << "3) Добавить событие" << endl;
+	cout << "3) Добавить событие (в разработке)" << endl;
 	cout << "4) Выход" << endl;
 	cout << "****************************************************" << endl;
 	cout << endl << endl;
@@ -72,7 +72,7 @@ int menu (Elevator& A, vector <Passenger> &listofPass) {
 		A.Motion();
 		Passout(A, listofPass);
 	}
-	if (k == 3)
+	//if (k == 3)
 		//ActionMenu();
 	if (k == 4)
 		return 1;
@@ -93,11 +93,13 @@ int Passmenu(Elevator& A, vector <Passenger> &listofPass) {
 	if (k == 1)
 		AddPass(A, listofPass);
 	if (k == 2){
-		while ((k < 0) || k > listofPass.size()) {
+		int j = 0;
+		PrintListofPass(listofPass);
+		while ((j <= 0) || j > listofPass.size()) {
 			cout << "Введите номер пассажира, которого нужно искючить" << endl;
-			cin >> k;
+			cin >> j;
 		}
-	DelPas(listofPass, k-1);
+	DelPas(A, listofPass, j-1);
 	}
 	if (k == 3){
 		PrintListofPass(listofPass);
@@ -122,7 +124,8 @@ void AddPass(Elevator& A, vector <Passenger> &listofPass) {
 			cin >> w;
 		}
 		for (int i = 0; i < w; i++) {
-			string name = "Incognito";
+			string name = "Incognito ";
+			name.push_back(i + '0');
 			int weight = rand() % 80 + 50;
 			int currentFloor = rand() % ((A.Get_maxFloor() - A.Get_minFloor()) + A.Get_minFloor());
 			int neededFloor = rand() % ((A.Get_maxFloor() - A.Get_minFloor()) + A.Get_minFloor());
@@ -188,26 +191,34 @@ void BubbleSort(vector <Passenger> &listofPass) {
 void PrintListofPass(vector <Passenger> &listofPass) {
 	cout << endl;
 	for (int i = 0; i < listofPass.size(); i++) {
-		cout << i+1 <<")"<< "\t";
+		cout << i+1 <<")\t";
 		listofPass[i].Print();
+		cout << endl;
 	}
 	cout << endl;
 }
 
-void DelPas(vector<Passenger> &listofPass, int k) {
+void DelPas(Elevator &A,  vector<Passenger> &listofPass, int k) {
 	if (k >= 0) {
+		if (listofPass[k].Get_position() == 1) {
+			A.MinusCurrentWeight(listofPass[k].Get_weight());
+		}
 		for (int i = k; i < listofPass.size()-1; i++) {
 			listofPass[i] = listofPass[i + 1];
 		}
 		listofPass.pop_back();
+
 	}
 }
 
 void Passin(Elevator& A, vector <Passenger> &listofPass) {
 	for (int i = 0; i < listofPass.size(); i++) {
-		if (A.Get_currentFloor() == listofPass[i].Get_currentFloor()) {
-			cout << "Пассажир " << listofPass[i].Get_name() << " зашёл в лифт" << endl;
+		if ((A.Get_currentFloor() == listofPass[i].Get_currentFloor())&&(listofPass[i].Get_position()==0)) {
+			cout << "Пассажир\t";
+			listofPass[i].Print();
+			cout << "\tзаходит в лифт" << endl;
 			A.AddStop(listofPass[i].Get_neededFloor());
+			A.PlusCurrentWeight(listofPass[i].Get_weight());
 			listofPass[i].Set_position(1);
 			Sleep(2000);
 		}
@@ -218,8 +229,11 @@ void Passout(Elevator& A, vector <Passenger> &listofPass) {
 	int i = 0;
 	while (i < listofPass.size()) {
 		if ((A.Get_currentFloor() == listofPass[i].Get_neededFloor())&&(listofPass[i].Get_position()==1)) {
-			cout << "Пассажир " << listofPass[i].Get_name() << " вышел из лифта" << endl;
-			DelPas(listofPass, i);
+			cout << "Пассажир\t";
+			listofPass[i].Print();
+			cout << "\tвышел из лифта" << endl;
+			A.MinusCurrentWeight(listofPass[i].Get_weight());
+			DelPas(A,listofPass, i);
 			i = i - 1;
 			Sleep(2000);
 		}

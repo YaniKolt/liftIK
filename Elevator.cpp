@@ -8,6 +8,7 @@ Elevator::Elevator()
 	maxFloor = 15;
 	minFloor = 1;
 	way = 1;
+	currentWeigth = 0;
 }
 
 Elevator::Elevator(int _maxWeight, int _maxFloor, int _minFloor)
@@ -17,6 +18,7 @@ Elevator::Elevator(int _maxWeight, int _maxFloor, int _minFloor)
 	maxFloor = _maxFloor;
 	minFloor = _minFloor;
 	way = 1;
+	currentWeigth = 0;
 }
 
 Elevator::Elevator(const Elevator& other) {
@@ -26,6 +28,7 @@ Elevator::Elevator(const Elevator& other) {
 	minFloor=other.minFloor;
 	stop = other.stop;
 	way = other.way;
+	currentWeigth = other.currentWeigth;
 }
 
 Elevator& Elevator::operator=(const Elevator& other) {
@@ -33,6 +36,9 @@ Elevator& Elevator::operator=(const Elevator& other) {
 	currentFloor = other.currentFloor;
 	maxFloor = other.maxFloor;
 	minFloor = other.minFloor;
+	stop = other.stop;
+	way = other.way;
+	currentWeigth = other.currentWeigth;
 	return *this;
 }
 
@@ -59,9 +65,10 @@ void Elevator::print() {
 	cout << "Лифт:" << endl;
 	cout << "________________________________________"<<endl;
 	cout << "Грузоподъёмность\t"<<maxWeight << endl;
-	cout << "Последний этаж:\t"<<maxFloor << endl;
-	cout << "Первый этаж:\t"<<minFloor << endl;
-	cout << "Текущий этаж:\t"<<currentFloor << endl;
+	cout << "Текущий вес:\t\t" << currentWeigth<<endl;
+	cout << "Последний этаж:\t\t"<<maxFloor << endl;
+	cout << "Первый этаж:\t\t"<<minFloor << endl;
+	cout << "Текущий этаж:\t\t"<<currentFloor << endl;
 	cout << "Остановки:\t";
 	for (int i = 0; i < stop.size(); i++) {
 		cout << stop[i] << " ";
@@ -69,15 +76,6 @@ void Elevator::print() {
 	cout<< endl << "__________________________________________"<<endl;
 }
 
-/*void Elevator::AddInsideStop(int k) {
-	if ((k > maxFloor) || (k < minFloor))
-		return;
-	for (int i = 0; i < stop.size(); i++) {
-		if (insideStop[i] == k)
-			return;
-	}
-	insideStop.push_back(k);
-}*/
 
 void Elevator::Motion() {
 	if (stop.size() == 0) {
@@ -102,45 +100,66 @@ void Elevator::Motion() {
 		cout << "Остановок нет" << endl;
 		return;
 	}
-	if (way == 0) {
-		//test();
-		while (1) {
-			for (int i = 0; i < stop.size(); i++) {
-				if (currentFloor == stop[i]) {
-					cout << "Этаж " << currentFloor << endl;
-					cout << "Открытие дверей" << endl;
-					Sleep(2000);
-					return;
-				}
-			}
-			for (int i = 0; i < 10; i++) {
-				Sleep(500);
-				cout << "v";				
-			}
-			cout << endl;
-			currentFloor--;
-			cout << "Этаж " << currentFloor << endl;
-		}
+	if (WeightTest() == 1) {
+		cout << "Перегруз, необходимо исключить кого-то из пассажиров, находящихся в лифте" << endl;
+		return;
 	}
-	if (way == 1) {
-		//test();
-		while (1) {
-			for (int i = 0; i < stop.size(); i++) {
-				if (currentFloor == stop[i]) {
-					cout << "Этаж " << currentFloor << endl;
-					cout << "Открытие дверей" << endl;
-					Sleep(2000);
-					return;
-				}
+	CloseDoor();
+	while (1) {
+		for (int i = 0; i < stop.size(); i++) {
+			if (currentFloor == stop[i]) {
+				OpenDoor();
+				return;
 			}
-			for (int i = 0; i < 10; i++) {
-				Sleep(500);
-				cout << "^";
-			}
-			cout << endl;
-			currentFloor++;
-			cout << "Этаж " << currentFloor << endl;
 		}
+		if (way==0)
+			cout << currentFloor << "         " << currentFloor - 1 << endl;
+		if (way == 1)
+			cout << currentFloor << "         " << currentFloor + 1 << endl;
+		for (int i = 0; i < 10; i++) {
+			if (way == 0)
+				cout << "v";
+			if (way == 1)
+				cout << "^";
+			Sleep(500);				
+		}
+		cout << endl;
+		if (way==0)
+			currentFloor--;
+		if (way == 1)
+			currentFloor++;
 	}
 	
+}
+
+void Elevator::PlusCurrentWeight (int i) {
+	currentWeigth += i;
+}
+void Elevator::MinusCurrentWeight(int i) {
+	currentWeigth -= i;
+}
+
+int Elevator::WeightTest() {
+	if (maxWeight < currentWeigth) {
+		return 1;
+	}
+	return 0;
+}
+
+void Elevator::OpenDoor() {
+	cout <<endl<< "Этаж " << currentFloor << endl;
+	cout << "Открытие дверей" << endl;
+	for (int i = 0; i < 10; i++) {
+		cout << "<";
+		Sleep(250);
+	}
+	cout << endl << endl;
+}
+void Elevator::CloseDoor() {
+	cout << endl << "Осторожно, двери закрываются" << endl;
+	for (int i = 0; i < 10; i++) {
+		cout << ">";
+		Sleep(250);
+	}
+	cout << endl << endl;
 }

@@ -19,6 +19,7 @@ public:
 	int Get_currentFloor() { return currentFloor; }
 	int Get_neededFloor() { return neededFloor; }
 	int Get_position() { return position; };
+	int Get_weight() { return weight; }
 	void Set_position(int i);
 	string Get_name() { return name; }
 	void Print();

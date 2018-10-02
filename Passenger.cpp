@@ -37,7 +37,12 @@ Passenger::Passenger(string _name, int _weight, int _currentFloor, int _neededfl
 }
 
 void Passenger::Print() {
-	cout << "\t" << currentFloor << "\t" << neededFloor <<"\t"<< weight <<"\t"<<name<< endl;
+	cout << currentFloor << "\t" << neededFloor << "\t" << weight;
+	if (position == 0)
+		cout << "\tÆä¸ò ëèôò";
+	if (position == 1)
+		cout << "\t Â ëèôòå";
+	cout << "\t" << name;
 }
 
 void Passenger::Set_position(int k) {
